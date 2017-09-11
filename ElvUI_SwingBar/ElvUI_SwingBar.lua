@@ -228,7 +228,7 @@ function UF:Configure_Swingbar(frame)
 			swingbar.Text:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
 			local x, y = self:GetPositionOffset(db.swingbar.text.position)
 			swingbar.Text:ClearAllPoints()
-			swingbar.Text:Point(db.swingbar.text.position, swingbar, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+			swingbar.Text:Point(db.swingbar.text.position, swingbar.Twohand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
 		else
 			swingbar.Text:Hide()
 		end
