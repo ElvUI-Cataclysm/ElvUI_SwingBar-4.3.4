@@ -167,22 +167,22 @@ function UF:Construct_Swingbar(frame)
 	swingbar.Twohand = CreateFrame("StatusBar", frame:GetName().."SwingBar_Twohand", swingbar)
 	UF["statusbars"][swingbar.Twohand] = true
 	swingbar.Twohand:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
-	swingbar.Twohand:Point("TOPLEFT")
-	swingbar.Twohand:Point("BOTTOMRIGHT")
+	swingbar.Twohand:Point("TOPLEFT", swingbar, "TOPLEFT", 0, 0)
+	swingbar.Twohand:Point("BOTTOMRIGHT", swingbar, "BOTTOMRIGHT", 0, 0)
 	swingbar.Twohand:Hide()
 
 	swingbar.Mainhand = CreateFrame("StatusBar", frame:GetName().."SwingBar_Mainhand", swingbar)
 	self["statusbars"][swingbar.Mainhand] = true
 	swingbar.Mainhand:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
-	swingbar.Mainhand:Point("TOPLEFT")
-	swingbar.Mainhand:Point("BOTTOMRIGHT")
+	swingbar.Mainhand:Point("TOPLEFT", swingbar, "TOPLEFT", 0, 0)
+	swingbar.Mainhand:Point("BOTTOMRIGHT", swingbar, "RIGHT", 0, E.Border)
 	swingbar.Mainhand:Hide()
 
 	swingbar.Offhand = CreateFrame("StatusBar", frame:GetName().."SwingBar_Offhand", swingbar)
 	self["statusbars"][swingbar.Offhand] = true
 	swingbar.Offhand:CreateBackdrop("Default", nil, nil, self.thinBorders, true)
-	swingbar.Offhand:Point("TOPLEFT")
-	swingbar.Offhand:Point("BOTTOMRIGHT")
+	swingbar.Offhand:Point("TOPLEFT", swingbar, "LEFT", 0, 0)
+	swingbar.Offhand:Point("BOTTOMRIGHT", swingbar, "BOTTOMRIGHT", 0, 0)
 	swingbar.Offhand:Hide()
 
 	swingbar.Text = swingbar:CreateFontString(nil, "OVERLAY")
@@ -240,7 +240,7 @@ function UF:Configure_Swingbar(frame)
 			swingbar.TextMH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
 			local x, y = self:GetPositionOffset(db.swingbar.text.position)
 			swingbar.TextMH:ClearAllPoints()
-			swingbar.TextMH:Point(db.swingbar.text.position, swingbar, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+			swingbar.TextMH:Point(db.swingbar.text.position, swingbar.Mainhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
 		else
 			swingbar.TextMH:Hide()
 		end
@@ -252,7 +252,7 @@ function UF:Configure_Swingbar(frame)
 			swingbar.TextOH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
 			local x, y = self:GetPositionOffset(db.swingbar.text.position)
 			swingbar.TextOH:ClearAllPoints()
-			swingbar.TextOH:Point(db.swingbar.text.position, swingbar, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+			swingbar.TextOH:Point(db.swingbar.text.position, swingbar.Offhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
 		else
 			swingbar.TextOH:Hide()
 		end
