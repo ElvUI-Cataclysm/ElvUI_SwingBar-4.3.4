@@ -162,6 +162,7 @@ end
 
 function UF:Construct_Swingbar(frame)
 	local swingbar = CreateFrame("Frame", frame:GetName().."SwingBar", frame)
+	swingbar:SetFrameLevel(frame.RaisedElementParent:GetFrameLevel() + 30)
 	swingbar:SetClampedToScreen(true)
 
 	swingbar.Twohand = CreateFrame("StatusBar", frame:GetName().."SwingBar_Twohand", swingbar)
