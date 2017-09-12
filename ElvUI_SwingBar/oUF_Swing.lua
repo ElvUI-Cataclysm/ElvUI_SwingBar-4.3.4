@@ -102,7 +102,6 @@ do
 	end
 end
 
---[[
 local function MeleeChange(self, event, unit)
 	if unit ~= "player" then return end
 	if not meleeing then return end
@@ -184,6 +183,7 @@ local function MeleeChange(self, event, unit)
 	end
 end
 
+--[[
 local function RangedChange(self, event, unit)
 	if unit ~= "player" then return end
 	if not rangeing then return end
@@ -460,7 +460,7 @@ local function Enable(self, unit)
 		if not swing.disableMelee then
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
 			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
---			self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
+			self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		end
 
 		self:RegisterEvent("PLAYER_REGEN_ENABLED", Ooc)
@@ -480,7 +480,7 @@ local function Disable(self)
 		if not swing.disableMelee then
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
 			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
---			self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
+			self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		end
 
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", Ooc)
