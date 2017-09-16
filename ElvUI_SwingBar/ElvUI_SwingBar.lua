@@ -204,67 +204,73 @@ function UF:Configure_Swingbar(frame)
 	local swingbar = frame.Swing
 	local db = frame.db
 
-	swingbar:Width(db.swingbar.width - (E.Border * 2))
-	swingbar:Height(db.swingbar.height)
-
-	swingbar.Holder:Width(db.swingbar.width)
-	swingbar.Holder:Height(db.swingbar.height + (E.PixelMode and 2 or (E.Border * 2)))
-
-	if swingbar.Holder:GetScript("OnSizeChanged") then
-		swingbar.Holder:GetScript("OnSizeChanged")(swingbar.Holder)
-	end
-
-	swingbar.Twohand:SetStatusBarColor(db.swingbar.color.r, db.swingbar.color.g, db.swingbar.color.b)
-	swingbar.Mainhand:SetStatusBarColor(db.swingbar.color.r, db.swingbar.color.g, db.swingbar.color.b)
-	swingbar.Offhand:SetStatusBarColor(db.swingbar.color.r, db.swingbar.color.g, db.swingbar.color.b)
-
-	local color = E.db.unitframe.colors.borderColor
-	swingbar.Twohand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-	swingbar.Mainhand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-	swingbar.Offhand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-
-	if swingbar.Text then
-		if db.swingbar.text.enable then
-			swingbar.Text:Show()
-			swingbar.Text:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
-			local x, y = self:GetPositionOffset(db.swingbar.text.position)
-			swingbar.Text:ClearAllPoints()
-			swingbar.Text:Point(db.swingbar.text.position, swingbar.Twohand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
-		else
-			swingbar.Text:Hide()
-		end
-	end
-
-	if swingbar.TextMH then
-		if db.swingbar.text.enable then
-			swingbar.TextMH:Show()
-			swingbar.TextMH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
-			local x, y = self:GetPositionOffset(db.swingbar.text.position)
-			swingbar.TextMH:ClearAllPoints()
-			swingbar.TextMH:Point(db.swingbar.text.position, swingbar.Mainhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
-		else
-			swingbar.TextMH:Hide()
-		end
-	end
-
-	if swingbar.TextOH then
-		if db.swingbar.text.enable then
-			swingbar.TextOH:Show()
-			swingbar.TextOH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
-			local x, y = self:GetPositionOffset(db.swingbar.text.position)
-			swingbar.TextOH:ClearAllPoints()
-			swingbar.TextOH:Point(db.swingbar.text.position, swingbar.Offhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
-		else
-			swingbar.TextOH:Hide()
-		end
-	end
-
 	if db.swingbar.enable then
-		frame:EnableElement("Swing")
+		if not frame:IsElementEnabled("Swing") then
+			frame:EnableElement("Swing")
+		end
+
 		swingbar:Show()
-	elseif not db.swingbar.enable then
+
+		swingbar:Width(db.swingbar.width - (E.Border * 2))
+		swingbar:Height(db.swingbar.height)
+
+		swingbar.Holder:Width(db.swingbar.width)
+		swingbar.Holder:Height(db.swingbar.height + (E.PixelMode and 2 or (E.Border * 2)))
+
+		if swingbar.Holder:GetScript("OnSizeChanged") then
+			swingbar.Holder:GetScript("OnSizeChanged")(swingbar.Holder)
+		end
+
+		swingbar.Twohand:SetStatusBarColor(db.swingbar.color.r, db.swingbar.color.g, db.swingbar.color.b)
+		swingbar.Mainhand:SetStatusBarColor(db.swingbar.color.r, db.swingbar.color.g, db.swingbar.color.b)
+		swingbar.Offhand:SetStatusBarColor(db.swingbar.color.r, db.swingbar.color.g, db.swingbar.color.b)
+
+		local color = E.db.unitframe.colors.borderColor
+		swingbar.Twohand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+		swingbar.Mainhand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+		swingbar.Offhand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+
+		if swingbar.Text then
+			if db.swingbar.text.enable then
+				swingbar.Text:Show()
+				swingbar.Text:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
+				local x, y = self:GetPositionOffset(db.swingbar.text.position)
+				swingbar.Text:ClearAllPoints()
+				swingbar.Text:Point(db.swingbar.text.position, swingbar.Twohand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+			else
+				swingbar.Text:Hide()
+			end
+		end
+
+		if swingbar.TextMH then
+			if db.swingbar.text.enable then
+				swingbar.TextMH:Show()
+				swingbar.TextMH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
+				local x, y = self:GetPositionOffset(db.swingbar.text.position)
+				swingbar.TextMH:ClearAllPoints()
+				swingbar.TextMH:Point(db.swingbar.text.position, swingbar.Mainhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+			else
+				swingbar.TextMH:Hide()
+			end
+		end
+
+		if swingbar.TextOH then
+			if db.swingbar.text.enable then
+				swingbar.TextOH:Show()
+				swingbar.TextOH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
+				local x, y = self:GetPositionOffset(db.swingbar.text.position)
+				swingbar.TextOH:ClearAllPoints()
+				swingbar.TextOH:Point(db.swingbar.text.position, swingbar.Offhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+			else
+				swingbar.TextOH:Hide()
+			end
+		end
+		E:EnableMover(frame:GetName().."SwingBarMover")
+	elseif frame:IsElementEnabled("Swing") then
 		frame:DisableElement("Swing")
+
 		swingbar:Hide()
+		E:DisableMover(frame:GetName().."SwingBarMover")
 	end
 end
 
