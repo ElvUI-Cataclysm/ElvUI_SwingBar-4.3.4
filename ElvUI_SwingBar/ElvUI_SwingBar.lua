@@ -2,7 +2,9 @@ local E, L, V, P, G = unpack(ElvUI)
 local SB = E:NewModule("SwingBar")
 local UF = E:GetModule("UnitFrames")
 local EP = LibStub("LibElvUIPlugin-1.0")
-local addonName = "ElvUI_SwingBar"
+local addonName = ...
+
+local NONE, FONT_SIZE, COLOR = NONE, FONT_SIZE, COLOR
 
 P.unitframe.units.player.swingbar = {
 	enable = true,
@@ -16,7 +18,8 @@ P.unitframe.units.player.swingbar = {
 		yOffset = 0,
 		font = "Homespun",
 		fontSize = 10,
-		fontOutline = "MONOCHROMEOUTLINE"
+		fontOutline = "MONOCHROMEOUTLINE",
+		color = {r = 1, g = 1, b = 1}
 	}
 }
 
@@ -153,6 +156,22 @@ local function getOptions()
 							["THICKOUTLINE"] = "THICKOUTLINE"
 						},
 						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
+					},
+					color = {
+						order = 9,
+						type = "color",
+						name = L["Text Color"],
+						get = function(info)
+							local t = E.db.unitframe.units.player.swingbar.text[info[#info]]
+							local d = P.unitframe.units.player.swingbar.text[info[#info]]
+							return t.r, t.g, t.b, t.a, d.r, d.g, d.b
+						end,
+						set = function(info, r, g, b)
+							local t = E.db.unitframe.units.player.swingbar.text[info[#info]]
+							t.r, t.g, t.b = r, g, b
+							UF:CreateAndUpdateUF("player")
+						end,
+						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
 					}
 				}
 			}
@@ -230,13 +249,15 @@ function UF:Configure_Swingbar(frame)
 		swingbar.Mainhand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 		swingbar.Offhand.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 
+		color = db.swingbar.text.color
+		local x, y = self:GetPositionOffset(db.swingbar.text.position)
 		if swingbar.Text then
 			if db.swingbar.text.enable then
 				swingbar.Text:Show()
 				swingbar.Text:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
-				local x, y = self:GetPositionOffset(db.swingbar.text.position)
 				swingbar.Text:ClearAllPoints()
 				swingbar.Text:Point(db.swingbar.text.position, swingbar.Twohand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+				swingbar.Text:SetTextColor(color.r, color.g, color.b)
 			else
 				swingbar.Text:Hide()
 			end
@@ -246,9 +267,9 @@ function UF:Configure_Swingbar(frame)
 			if db.swingbar.text.enable then
 				swingbar.TextMH:Show()
 				swingbar.TextMH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
-				local x, y = self:GetPositionOffset(db.swingbar.text.position)
 				swingbar.TextMH:ClearAllPoints()
 				swingbar.TextMH:Point(db.swingbar.text.position, swingbar.Mainhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+				swingbar.TextMH:SetTextColor(color.r, color.g, color.b)
 			else
 				swingbar.TextMH:Hide()
 			end
@@ -258,9 +279,9 @@ function UF:Configure_Swingbar(frame)
 			if db.swingbar.text.enable then
 				swingbar.TextOH:Show()
 				swingbar.TextOH:FontTemplate(UF.LSM:Fetch("font", db.swingbar.text.font), db.swingbar.text.fontSize, db.swingbar.text.fontOutline)
-				local x, y = self:GetPositionOffset(db.swingbar.text.position)
 				swingbar.TextOH:ClearAllPoints()
 				swingbar.TextOH:Point(db.swingbar.text.position, swingbar.Offhand, db.swingbar.text.position, x + db.swingbar.text.xOffset, y + db.swingbar.text.yOffset)
+				swingbar.TextOH:SetTextColor(color.r, color.g, color.b)
 			else
 				swingbar.TextOH:Hide()
 			end
