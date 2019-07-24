@@ -1,9 +1,11 @@
 ## Interface: 40300
 ## Author: Bunny
-## Version: 1.0
-## Title: |cff1784d1E|r|cffe5e3e3lvUI|r |cff1784d1S|r|cffe5e3e3wing|r |cff1784d1B|r|cffe5e3e3ar|r
+## Version: 1.2
+## Title: |cffff7000E|r|cffe5e3e3lvUI|r |cffff7000S|r|cffe5e3e3wing|r |cffff7000B|r|cffe5e3e3ar|r
 ## RequiredDeps: ElvUI
 
-Locales.lua
-oUF_Swing.lua
+Locales\Load_Locales.xml
+Libraries\oUF_Swing.lua
+Settings\Load_Settings.xml
 ElvUI_SwingBar.lua
+Config\Load_Config.xml
