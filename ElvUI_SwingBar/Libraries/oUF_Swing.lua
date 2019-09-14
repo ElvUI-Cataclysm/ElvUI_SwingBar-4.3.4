@@ -348,85 +348,24 @@ local function Enable(self, unit)
 	local element = self.Swing
 
 	if element and unit == "player" then
-		if not element.Twohand then
-			element.Twohand = CreateFrame("StatusBar", nil, element)
-			element.Twohand:SetPoint("TOPLEFT", element, "TOPLEFT", 0, 0)
-			element.Twohand:SetPoint("BOTTOMRIGHT", element, "BOTTOMRIGHT", 0, 0)
-			element.Twohand:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			element.Twohand:SetStatusBarColor(1, 1, 1, 1)
-			element.Twohand:SetFrameLevel(20)
-			element.Twohand:Hide()
+		for _, Bar in pairs({element.Twohand, element.Mainhand, element.Offhand}) do
+			Bar.__owner = element
 
-			element.Twohand.bg = element.Twohand:CreateTexture(nil, "BACKGROUND")
-			element.Twohand.bg:SetAllPoints(element.Twohand)
-			element.Twohand.bg:SetTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			element.Twohand.bg:SetVertexColor(0, 0, 0, 1)
-		end
-		element.Twohand.__owner = element
+			if Bar:IsObjectType("StatusBar") and not Bar:GetStatusBarTexture() then
+				Bar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
+			end
 
-		if element.Text then
-			element.Twohand.Text = element.Text
-			element.Twohand.Text:SetParent(element.Twohand)
-		end
+			if Bar.Spark and Bar.Spark:IsObjectType("Texture") and not Bar.Spark:GetTexture() then
+				Bar.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+			end
 
-		if element.Twohand.Spark and element.Twohand.Spark:IsObjectType("Texture") and not element.Twohand.Spark:GetTexture() then
-			element.Twohand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
-		end
+			if Bar.Text then
+				Bar.Text:SetParent(Bar)
+			end
 
-		if not element.Mainhand then
-			element.Mainhand = CreateFrame("StatusBar", nil, element)
-			element.Mainhand:SetPoint("TOPLEFT", element, "TOPLEFT", 0, 0)
-			element.Mainhand:SetPoint("BOTTOMRIGHT", element, "RIGHT", 0, 0)
-			element.Mainhand:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			element.Mainhand:SetStatusBarColor(1, 1, 1, 1)
-			element.Mainhand:SetFrameLevel(20)
-			element.Mainhand:Hide()
-
-			element.Mainhand.bg = element.Mainhand:CreateTexture(nil, "BACKGROUND")
-			element.Mainhand.bg:SetAllPoints(element.Mainhand)
-			element.Mainhand.bg:SetTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			element.Mainhand.bg:SetVertexColor(0, 0, 0, 1)
-		end
-		element.Mainhand.__owner = element
-
-		if element.TextMH then
-			element.Mainhand.Text = element.TextMH
-			element.Mainhand.Text:SetParent(element.Mainhand)
-		end
-
-		if element.Mainhand.Spark and element.Mainhand.Spark:IsObjectType("Texture") and not element.Mainhand.Spark:GetTexture() then
-			element.Mainhand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
-		end
-
-		if not element.Offhand then
-			element.Offhand = CreateFrame("StatusBar", nil, element)
-			element.Offhand:SetPoint("TOPLEFT", element, "LEFT", 0, 0)
-			element.Offhand:SetPoint("BOTTOMRIGHT", element, "BOTTOMRIGHT", 0, 0)
-			element.Offhand:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			element.Offhand:SetStatusBarColor(1, 1, 1, 1)
-			element.Offhand:SetFrameLevel(20)
-			element.Offhand:Hide()
-
-			element.Offhand.bg = element.Offhand:CreateTexture(nil, "BACKGROUND")
-			element.Offhand.bg:SetAllPoints(element.Offhand)
-			element.Offhand.bg:SetTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
-			element.Offhand.bg:SetVertexColor(0, 0, 0, 1)
-		end
-		element.Offhand.__owner = element
-
-		if element.TextOH then
-			element.Offhand.Text = element.TextOH
-			element.Offhand.Text:SetParent(element.Offhand)
-		end
-
-		if element.OverrideText then
-			element.Twohand.OverrideText = element.OverrideText
-			element.Mainhand.OverrideText = element.OverrideText
-			element.Offhand.OverrideText = element.OverrideText
-		end
-
-		if element.Offhand.Spark and element.Offhand.Spark:IsObjectType("Texture") and not element.Offhand.Spark:GetTexture() then
-			element.Offhand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+			if element.OverrideText then
+				Bar.OverrideText = element.OverrideText
+			end
 		end
 
 		if not element.disableRanged then
@@ -448,6 +387,7 @@ end
 
 local function Disable(self)
 	local element = self.Swing
+
 	if element then
 		if not element.disableRanged then
 			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
