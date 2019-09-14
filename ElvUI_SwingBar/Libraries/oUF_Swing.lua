@@ -286,7 +286,7 @@ local function ParryHaste(self, event, _, subevent, _, _, _, _, _, tarGUID, _, m
 	if not meleeing then return end
 	if not find(subevent, "MISSED") then return end
 	if missType ~= "PARRY" then return end
-	
+
 	local element = self.Swing
 	local _, dualwield = UnitAttackSpeed("player")
 	local now = GetTime()
@@ -348,79 +348,71 @@ local function Enable(self, unit)
 	local element = self.Swing
 
 	if element and unit == "player" then
-		local normTex = element.texture or [=[Interface\TargetingFrame\UI-StatusBar]=]
-		local bgTex = element.textureBG or [=[Interface\TargetingFrame\UI-StatusBar]=]
-		local r, g, b, a, r2, g2, b2, a2
-		
-		if element.color then
-			r, g, b, a = unpack(element.color)
-		else
-			r, g, b, a = 1, 1, 1, 1
-		end
-		
-		if element.colorBG then
-			r2, g2, b2, a2 = unpack(element.colorBG) 
-		else
-			r2, g2, b2, a2 = 0, 0, 0, 1
-		end
-
 		if not element.Twohand then
 			element.Twohand = CreateFrame("StatusBar", nil, element)
 			element.Twohand:SetPoint("TOPLEFT", element, "TOPLEFT", 0, 0)
 			element.Twohand:SetPoint("BOTTOMRIGHT", element, "BOTTOMRIGHT", 0, 0)
-			element.Twohand:SetStatusBarTexture(normTex)
-			element.Twohand:SetStatusBarColor(r, g, b, a)
+			element.Twohand:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+			element.Twohand:SetStatusBarColor(1, 1, 1, 1)
 			element.Twohand:SetFrameLevel(20)
 			element.Twohand:Hide()
 
 			element.Twohand.bg = element.Twohand:CreateTexture(nil, "BACKGROUND")
 			element.Twohand.bg:SetAllPoints(element.Twohand)
-			element.Twohand.bg:SetTexture(bgTex)
-			element.Twohand.bg:SetVertexColor(r2, g2, b2, a2)
+			element.Twohand.bg:SetTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+			element.Twohand.bg:SetVertexColor(0, 0, 0, 1)
 		end
 		element.Twohand.__owner = element
-
-		if not element.Mainhand then
-			element.Mainhand = CreateFrame("StatusBar", nil, element)
-			element.Mainhand:SetPoint("TOPLEFT", element, "TOPLEFT", 0, 0)
-			element.Mainhand:SetPoint("BOTTOMRIGHT", element, "RIGHT", 0, 0)
-			element.Mainhand:SetStatusBarTexture(normTex)
-			element.Mainhand:SetStatusBarColor(r, g, b, a)
-			element.Mainhand:SetFrameLevel(20)
-			element.Mainhand:Hide()
-
-			element.Mainhand.bg = element.Mainhand:CreateTexture(nil, "BACKGROUND")
-			element.Mainhand.bg:SetAllPoints(element.Mainhand)
-			element.Mainhand.bg:SetTexture(bgTex)
-			element.Mainhand.bg:SetVertexColor(r2, g2, b2, a2)
-		end
-		element.Mainhand.__owner = element
-
-		if not element.Offhand then
-			element.Offhand = CreateFrame("StatusBar", nil, element)
-			element.Offhand:SetPoint("TOPLEFT", element, "LEFT", 0, 0)
-			element.Offhand:SetPoint("BOTTOMRIGHT", element, "BOTTOMRIGHT", 0, 0)
-			element.Offhand:SetStatusBarTexture(normTex)
-			element.Offhand:SetStatusBarColor(r, g, b, a)
-			element.Offhand:SetFrameLevel(20)
-			element.Offhand:Hide()
-
-			element.Offhand.bg = element.Offhand:CreateTexture(nil, "BACKGROUND")
-			element.Offhand.bg:SetAllPoints(element.Offhand)
-			element.Offhand.bg:SetTexture(bgTex)
-			element.Offhand.bg:SetVertexColor(r2, g2, b2, a2)
-		end
-		element.Offhand.__owner = element
 
 		if element.Text then
 			element.Twohand.Text = element.Text
 			element.Twohand.Text:SetParent(element.Twohand)
 		end
 
+		if element.Twohand.Spark and element.Twohand.Spark:IsObjectType("Texture") and not element.Twohand.Spark:GetTexture() then
+			element.Twohand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+		end
+
+		if not element.Mainhand then
+			element.Mainhand = CreateFrame("StatusBar", nil, element)
+			element.Mainhand:SetPoint("TOPLEFT", element, "TOPLEFT", 0, 0)
+			element.Mainhand:SetPoint("BOTTOMRIGHT", element, "RIGHT", 0, 0)
+			element.Mainhand:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+			element.Mainhand:SetStatusBarColor(1, 1, 1, 1)
+			element.Mainhand:SetFrameLevel(20)
+			element.Mainhand:Hide()
+
+			element.Mainhand.bg = element.Mainhand:CreateTexture(nil, "BACKGROUND")
+			element.Mainhand.bg:SetAllPoints(element.Mainhand)
+			element.Mainhand.bg:SetTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+			element.Mainhand.bg:SetVertexColor(0, 0, 0, 1)
+		end
+		element.Mainhand.__owner = element
+
 		if element.TextMH then
 			element.Mainhand.Text = element.TextMH
 			element.Mainhand.Text:SetParent(element.Mainhand)
 		end
+
+		if element.Mainhand.Spark and element.Mainhand.Spark:IsObjectType("Texture") and not element.Mainhand.Spark:GetTexture() then
+			element.Mainhand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+		end
+
+		if not element.Offhand then
+			element.Offhand = CreateFrame("StatusBar", nil, element)
+			element.Offhand:SetPoint("TOPLEFT", element, "LEFT", 0, 0)
+			element.Offhand:SetPoint("BOTTOMRIGHT", element, "BOTTOMRIGHT", 0, 0)
+			element.Offhand:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+			element.Offhand:SetStatusBarColor(1, 1, 1, 1)
+			element.Offhand:SetFrameLevel(20)
+			element.Offhand:Hide()
+
+			element.Offhand.bg = element.Offhand:CreateTexture(nil, "BACKGROUND")
+			element.Offhand.bg:SetAllPoints(element.Offhand)
+			element.Offhand.bg:SetTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+			element.Offhand.bg:SetVertexColor(0, 0, 0, 1)
+		end
+		element.Offhand.__owner = element
 
 		if element.TextOH then
 			element.Offhand.Text = element.TextOH
@@ -431,6 +423,10 @@ local function Enable(self, unit)
 			element.Twohand.OverrideText = element.OverrideText
 			element.Mainhand.OverrideText = element.OverrideText
 			element.Offhand.OverrideText = element.OverrideText
+		end
+
+		if element.Offhand.Spark and element.Offhand.Spark:IsObjectType("Texture") and not element.Offhand.Spark:GetTexture() then
+			element.Offhand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 		end
 
 		if not element.disableRanged then
