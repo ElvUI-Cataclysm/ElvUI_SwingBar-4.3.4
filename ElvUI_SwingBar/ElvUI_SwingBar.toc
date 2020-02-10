@@ -1,6 +1,6 @@
 ## Interface: 40300
 ## Author: Bunny
-## Version: 1.4
+## Version: 1.5
 ## Title: |cffff7000E|r|cffe5e3e3lvUI|r |cffff7000S|r|cffe5e3e3wing|r |cffff7000B|r|cffe5e3e3ar|r
 ## RequiredDeps: ElvUI
 
