@@ -1,5 +1,5 @@
 local E, _, V, P, G = unpack(ElvUI)
-local L = E.Libs.ACL:GetLocale("ElvUI", E.global.general.locale or "enUS")
+local L = E.Libs.ACL:GetLocale("ElvUI", E.global.general.locale)
 local SB = E:GetModule("SwingBar")
 local UF = E:GetModule("UnitFrames")
 
@@ -20,60 +20,28 @@ local function ColorizeSettingName(settingName)
 end
 
 function SB:InsertOptions()
-	local ACD = E.Libs.AceConfigDialog
-
 	if not E.Options.args.elvuiPlugins then
 		E.Options.args.elvuiPlugins = {
 			order = 50,
 			type = "group",
 			name = "|cffff7000E|r|cffe5e3e3lvUI |r|cffff7000P|r|cffe5e3e3lugins|r",
-			args = {
-				header = {
-					order = 0,
-					type = "header",
-					name = "|cffff7000E|r|cffe5e3e3lvUI |r|cffff7000P|r|cffe5e3e3lugins|r"
-				},
-				swingBarShortcut = {
-					type = "execute",
-					name = ColorizeSettingName(L["Swing Bar"]),
-					func = function()
-						if IsAddOnLoaded("ElvUI_OptionsUI") then
-							ACD:SelectGroup("ElvUI", "elvuiPlugins", "swing")
-						end
-					end
-				}
-			}
-		}
-	elseif not E.Options.args.elvuiPlugins.args.swingBarShortcut then
-		E.Options.args.elvuiPlugins.args.swingBarShortcut = {
-			type = "execute",
-			name = ColorizeSettingName(L["Swing Bar"]),
-			func = function()
-				if IsAddOnLoaded("ElvUI_OptionsUI") then
-					ACD:SelectGroup("ElvUI", "elvuiPlugins", "swing")
-				end
-			end
+			args = {}
 		}
 	end
 
 	E.Options.args.elvuiPlugins.args.swing = {
 		type = "group",
-		name = ColorizeSettingName(L["Swing Bar"]),
+		name = "|cffff7000S|r|cffe5e3e3wing |r|cffff7000B|r|cffe5e3e3ar|r",
 		get = function(info) return E.db.unitframe.units.player.swingbar[info[#info]] end,
 		set = function(info, value) E.db.unitframe.units.player.swingbar[info[#info]] = value UF:CreateAndUpdateUF("player") end,
 		args = {
-			header = {
-				order = 1,
-				type = "header",
-				name = L["Swing Bar"]
-			},
 			enable = {
-				order = 2,
+				order = 1,
 				type = "toggle",
 				name = L["ENABLE"]
 			},
 			restore = {
-				order = 3,
+				order = 2,
 				type = "execute",
 				name = L["Restore Defaults"],
 				buttonElvUI = true,
@@ -81,37 +49,37 @@ function SB:InsertOptions()
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			spacer = {
-				order = 4,
+				order = 3,
 				type = "description",
 				name = " "
 			},
 			width = {
-				order = 5,
+				order = 4,
 				type = "range",
 				name = L["Width"],
 				min = 50, max = 600, step = 1,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			height = {
-				order = 6,
+				order = 5,
 				type = "range",
 				name = L["Height"],
 				min = 5, max = 85, step = 1,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			spark = {
-				order = 7,
+				order = 6,
 				type = "toggle",
 				name = L["Spark"],
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			spacer2 = {
-				order = 8,
+				order = 7,
 				type = "description",
 				name = " "
 			},
 			color = {
-				order = 9,
+				order = 8,
 				type = "color",
 				name = L["COLOR"],
 				get = function(info)
@@ -127,7 +95,7 @@ function SB:InsertOptions()
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			backdropColor = {
-				order = 10,
+				order = 9,
 				type = "color",
 				name = L["Backdrop Color"],
 				get = function(info)
@@ -143,7 +111,7 @@ function SB:InsertOptions()
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			textGroup = {
-				order = 11,
+				order = 10,
 				type = "group",
 				name = L["Text"],
 				guiInline = true,

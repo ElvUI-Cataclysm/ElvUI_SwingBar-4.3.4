@@ -30,10 +30,8 @@ end
 
 local OnDurationUpdate
 do
-	local checkelapsed = 0
-	local slamelapsed = 0
-	local slamtime = 0
 	local now
+	local checkelapsed, slamelapsed, slamtime = 0, 0, 0
 	local slam = GetSpellInfo(1464)
 
 	function OnDurationUpdate(self, elapsed)
@@ -84,12 +82,9 @@ do
 				end
 			else
 				self:SetValue(now)
+
 				if self.Text then
-					if self.__owner.OverrideText then
-						self.__owner.OverrideText(self, now)
-					else
-						self.Text:SetFormattedText("%.1f", self.max - now)
-					end
+					self.Text:SetFormattedText("%.1f", self.max - now)
 				end
 			end
 		end
@@ -229,7 +224,7 @@ local function Ranged(self, _, unit, spellName)
 	element.Offhand:SetScript("OnUpdate", nil)
 end
 
-local function Melee(self, event, _, subevent, _, GUID)
+local function Melee(self, _, _, subevent, _, GUID)
 	if UnitGUID("player") ~= GUID then return end
 	if not find(subevent, "SWING") then return end
 
@@ -281,7 +276,7 @@ local function Melee(self, event, _, subevent, _, GUID)
 	lasthit = GetTime()
 end
 
-local function ParryHaste(self, event, _, subevent, _, _, _, _, _, tarGUID, _, missType)
+local function ParryHaste(self, _, _, subevent, _, _, _, _, _, tarGUID, _, missType)
 	if UnitGUID("player") ~= tarGUID then return end
 	if not meleeing then return end
 	if not find(subevent, "MISSED") then return end
@@ -336,8 +331,6 @@ local function Ooc(self)
 	meleeing = false
 	rangeing = false
 
-	if not element.hideOoc then return end
-
 	element:Hide()
 	element.Twohand:Hide()
 	element.Mainhand:Hide()
@@ -362,23 +355,13 @@ local function Enable(self, unit)
 			if Bar.Text then
 				Bar.Text:SetParent(Bar)
 			end
-
-			if element.OverrideText then
-				Bar.OverrideText = element.OverrideText
-			end
 		end
 
-		if not element.disableRanged then
-			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
---			self:RegisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
-		end
-
-		if not element.disableMelee then
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
-			self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
-		end
-
+		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
+--		self:RegisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
+		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
+		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
+		self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		self:RegisterEvent("PLAYER_REGEN_ENABLED", Ooc)
 
 		return true
@@ -389,17 +372,11 @@ local function Disable(self)
 	local element = self.Swing
 
 	if element then
-		if not element.disableRanged then
-			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
---			self:UnregisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
-		end
-
-		if not element.disableMelee then
-			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
-			self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
-			self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
-		end
-
+		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
+--		self:UnregisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
+		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
+		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
+		self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", Ooc)
 
 		element:Hide()
