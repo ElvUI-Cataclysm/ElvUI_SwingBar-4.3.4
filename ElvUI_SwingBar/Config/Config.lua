@@ -15,10 +15,6 @@ local positionValues = {
 	BOTTOMRIGHT = L["Bottom Right"]
 }
 
-local function ColorizeSettingName(settingName)
-	return format("|cff1784d1%s|r", settingName)
-end
-
 function SB:InsertOptions()
 	if not E.Options.args.elvuiPlugins then
 		E.Options.args.elvuiPlugins = {
@@ -124,34 +120,8 @@ function SB:InsertOptions()
 						name = L["ENABLE"],
 						disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 					},
-					spacer = {
-						order = 2,
-						type = "description",
-						name = " "
-					},
-					position = {
-						order = 3,
-						type = "select",
-						name = L["Text Position"],
-						values = positionValues,
-						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
-					},
-					xOffset = {
-						order = 4,
-						type = "range",
-						name = L["X-Offset"],
-						min = -300, max = 300, step = 1,
-						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
-					},
-					yOffset = {
-						order = 5,
-						type = "range",
-						name = L["Y-Offset"],
-						min = -300, max = 300, step = 1,
-						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
-					},
 					color = {
-						order = 6,
+						order = 2,
 						type = "color",
 						name = L["Text Color"],
 						get = function(info)
@@ -164,6 +134,32 @@ function SB:InsertOptions()
 							t.r, t.g, t.b = r, g, b
 							UF:CreateAndUpdateUF("player")
 						end,
+						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
+					},
+					spacer = {
+						order = 3,
+						type = "description",
+						name = " "
+					},
+					position = {
+						order = 4,
+						type = "select",
+						name = L["Text Position"],
+						values = positionValues,
+						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
+					},
+					xOffset = {
+						order = 5,
+						type = "range",
+						name = L["X-Offset"],
+						min = -300, max = 300, step = 1,
+						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
+					},
+					yOffset = {
+						order = 6,
+						type = "range",
+						name = L["Y-Offset"],
+						min = -300, max = 300, step = 1,
 						disabled = function() return not E.db.unitframe.units.player.swingbar.text.enable or not E.db.unitframe.units.player.swingbar.enable end
 					},
 					font = {

@@ -2,7 +2,6 @@ local _, ns = ...
 local oUF = oUF or ns.oUF or ElvUF
 if not oUF then return end
 
-local unpack = unpack
 local find = string.find
 
 local GetInventoryItemID = GetInventoryItemID
@@ -12,73 +11,74 @@ local UnitAttackSpeed = UnitAttackSpeed
 local UnitCastingInfo = UnitCastingInfo
 local UnitRangedDamage = UnitRangedDamage
 
-local MainhandID = GetInventoryItemID("player", 16)
-local OffhandID = GetInventoryItemID("player", 17)
-local RangedID = GetInventoryItemID("player", 18)
+local mainHandID = GetInventoryItemID("player", 16)
+local offHandID = GetInventoryItemID("player", 17)
+local rangedID = GetInventoryItemID("player", 18)
 
-local meleeing, rangeing, lasthit
+local meleeing, rangeing, lastHit
 
 local function SwingStopped(element)
 	local bar = element.__owner
 
-	if bar.Twohand:IsShown() then return end
-	if bar.Mainhand:IsShown() then return end
-	if bar.Offhand:IsShown() then return end
+	for _, Bar in pairs({bar.Twohand, bar.Mainhand, bar.Offhand}) do
+		if Bar:IsShown() then return end
+	end
 
 	bar:Hide()
 end
 
 local OnDurationUpdate
 do
-	local now
-	local checkelapsed, slamelapsed, slamtime = 0, 0, 0
+	local checkElapsed, slamElapsed, slamTime = 0, 0, 0
 	local slam = GetSpellInfo(1464)
 
 	function OnDurationUpdate(self, elapsed)
-		now = GetTime()
+		local now = GetTime()
 
 		if meleeing then
-			if checkelapsed > 0.02 then
-				if lasthit + self.speed + slamtime < now then
+			if checkElapsed > 0.01 then
+				if lastHit + self.speed + slamTime < now then
 					self:Hide()
 					self:SetScript("OnUpdate", nil)
 					SwingStopped(self)
-					meleeing = false
-					rangeing = false
+
+					meleeing, rangeing = false, false
 				end
-				
-				checkelapsed = 0
+
+				checkElapsed = 0
 			else
-				checkelapsed = checkelapsed + elapsed
+				checkElapsed = checkElapsed + elapsed
 			end
 		end
 
-		local spell = UnitCastingInfo("player")
-
-		if slam == spell then
-			slamelapsed = slamelapsed + elapsed
-			slamtime = slamtime + elapsed
+		if slam == UnitCastingInfo("player") then
+			slamElapsed = slamElapsed + elapsed
+			slamTime = slamTime + elapsed
 		else
-			if slamelapsed ~= 0 then
-				self.min = self.min + slamelapsed
-				self.max = self.max + slamelapsed
+			if slamElapsed ~= 0 then
+				self.min = self.min + slamElapsed
+				self.max = self.max + slamElapsed
+
 				self:SetMinMaxValues(self.min, self.max)
-				slamelapsed = 0
+
+				slamElapsed = 0
 			end
 
 			if now > self.max then
 				if meleeing then
-					if lasthit then
+					if lastHit then
 						self.min = self.max
 						self.max = self.max + self.speed
+
 						self:SetMinMaxValues(self.min, self.max)
-						slamtime = 0
+
+						slamTime = 0
 					end
 				else
 					self:Hide()
 					self:SetScript("OnUpdate", nil)
-					meleeing = false
-					rangeing = false
+
+					meleeing, rangeing = false, false
 				end
 			else
 				self:SetValue(now)
@@ -96,37 +96,35 @@ local function MeleeChange(self, _, unit)
 	if not meleeing then return end
 
 	local element = self.Swing
-
-	local NewMainhandID = GetInventoryItemID("player", 16)
-	local NewOffhandID = GetInventoryItemID("player", 17)
-
 	local now = GetTime()
-	local mhspeed, ohspeed = UnitAttackSpeed("player")
+	local newMainHandID = GetInventoryItemID("player", 16)
+	local newOffHandID = GetInventoryItemID("player", 17)
+	local mainSpeed, offSpeed = UnitAttackSpeed("player")
 
-	if MainhandID ~= NewMainhandID or OffhandID ~= NewOffhandID then
-		if ohspeed then
+	if (mainHandID ~= newMainHandID) or (offHandID ~= newOffHandID) then
+		if offSpeed then
 			element.Twohand:Hide()
 			element.Twohand:SetScript("OnUpdate", nil)
 
 			element.Mainhand.min = GetTime()
-			element.Mainhand.max = element.Mainhand.min + mhspeed
-			element.Mainhand.speed = mhspeed
+			element.Mainhand.max = element.Mainhand.min + mainSpeed
+			element.Mainhand.speed = mainSpeed
 
 			element.Mainhand:Show()
 			element.Mainhand:SetMinMaxValues(element.Mainhand.min, element.Mainhand.max)
 			element.Mainhand:SetScript("OnUpdate", OnDurationUpdate)
 
 			element.Offhand.min = GetTime()
-			element.Offhand.max = element.Offhand.min + ohspeed
-			element.Offhand.speed = ohspeed
+			element.Offhand.max = element.Offhand.min + offSpeed
+			element.Offhand.speed = offSpeed
 
 			element.Offhand:Show()
 			element.Offhand:SetMinMaxValues(element.Offhand.min, element.Mainhand.max)
 			element.Offhand:SetScript("OnUpdate", OnDurationUpdate)
 		else
 			element.Twohand.min = GetTime()
-			element.Twohand.max = element.Twohand.min + mhspeed
-			element.Twohand.speed = mhspeed
+			element.Twohand.max = element.Twohand.min + mainSpeed
+			element.Twohand.speed = mainSpeed
 
 			element.Twohand:Show()
 			element.Twohand:SetMinMaxValues(element.Twohand.min, element.Twohand.max)
@@ -139,33 +137,32 @@ local function MeleeChange(self, _, unit)
 			element.Offhand:SetScript("OnUpdate", nil)
 		end
 
-		lasthit = now
+		lastHit = now
 
-		MainhandID = NewMainhandID
-		OffhandID = NewOffhandID
+		mainHandID, offHandID = newMainHandID, newOffHandID
 	else
-		if ohspeed then
-			if element.Mainhand.speed ~= mhspeed then
+		if offSpeed then
+			if element.Mainhand.speed ~= mainSpeed then
 				local percentage = (element.Mainhand.max - now) / (element.Mainhand.speed)
-				element.Mainhand.min = now - mhspeed * (1 - percentage)
-				element.Mainhand.max = now + mhspeed * percentage
+				element.Mainhand.min = now - mainSpeed * (1 - percentage)
+				element.Mainhand.max = now + mainSpeed * percentage
 				element.Mainhand:SetMinMaxValues(element.Mainhand.min, element.Mainhand.max)
-				element.Mainhand.speed = mhspeed
+				element.Mainhand.speed = mainSpeed
 			end
-			if element.Offhand.speed ~= ohspeed then
+			if element.Offhand.speed ~= offSpeed then
 				local percentage = (element.Offhand.max - now) / (element.Offhand.speed)
-				element.Offhand.min = now - ohspeed * (1 - percentage)
-				element.Offhand.max = now + ohspeed * percentage
+				element.Offhand.min = now - offSpeed * (1 - percentage)
+				element.Offhand.max = now + offSpeed * percentage
 				element.Offhand:SetMinMaxValues(element.Offhand.min, element.Offhand.max)
-				element.Offhand.speed = ohspeed
+				element.Offhand.speed = offSpeed
 			end
 		else
-			if element.Twohand.speed ~= mhspeed then
+			if element.Twohand.speed ~= mainSpeed then
 				local percentage = (element.Twohand.max - now) / (element.Twohand.speed)
-				element.Twohand.min = now - mhspeed * (1 - percentage)
-				element.Twohand.max = now + mhspeed * percentage
+				element.Twohand.min = now - mainSpeed * (1 - percentage)
+				element.Twohand.max = now + mainSpeed * percentage
 				element.Twohand:SetMinMaxValues(element.Twohand.min, element.Twohand.max)
-				element.Twohand.speed = mhspeed
+				element.Twohand.speed = mainSpeed
 			end
 		end
 	end
@@ -176,18 +173,20 @@ local function RangedChange(self, _, unit)
 	if not rangeing then return end
 
 	local element = self.Swing
-	local NewRangedID = GetInventoryItemID("player", 18)
 	local now = GetTime()
+	local newRangedID = GetInventoryItemID("player", 18)
 	local speed = UnitRangedDamage("player")
 
-	if RangedID ~= NewRangedID then
+	if rangedID ~= newRangedID then
 		element.Twohand.speed = UnitRangedDamage(unit)
 		element.Twohand.min = GetTime()
 		element.Twohand.max = element.Twohand.min + element.Twohand.speed
 
 		element.Twohand:Show()
 		element.Twohand:SetMinMaxValues(element.Twohand.min, element.Twohand.max)
-		element.Twohand:SetScript("OnUpdate", OnDurationupdate)
+		element.Twohand:SetScript("OnUpdate", OnDurationUpdate)
+
+		rangedID = newRangedID
 	else
 		if element.Twohand.speed ~= speed then
 			local percentage = (element.Twohand.max - GetTime()) / (element.Twohand.speed)
@@ -204,9 +203,6 @@ local function Ranged(self, _, unit, spellName)
 
 	local element = self.Swing
 
-	meleeing = false
-	rangeing = true
-
 	element:Show()
 
 	element.Twohand.speed = UnitRangedDamage(unit)
@@ -222,6 +218,8 @@ local function Ranged(self, _, unit, spellName)
 
 	element.Offhand:Hide()
 	element.Offhand:SetScript("OnUpdate", nil)
+
+	meleeing, rangeing = false, true
 end
 
 local function Melee(self, _, _, subevent, _, GUID)
@@ -229,64 +227,61 @@ local function Melee(self, _, _, subevent, _, GUID)
 	if not find(subevent, "SWING") then return end
 
 	local element = self.Swing
+	local now = GetTime()
 
 	if not meleeing then
 		element:Show()
 
-		element.Twohand:Hide()
-		element.Mainhand:Hide()
-		element.Offhand:Hide()
+		for _, Bar in pairs({element.Twohand, element.Mainhand, element.Offhand}) do
+			Bar:Hide()
+			Bar:SetScript("OnUpdate", nil)
+		end
 
-		element.Twohand:SetScript("OnUpdate", nil)
-		element.Mainhand:SetScript("OnUpdate", nil)
-		element.Offhand:SetScript("OnUpdate", nil)
+		local mainSpeed, offSpeed = UnitAttackSpeed("player")
 
-		local mhspeed, ohspeed = UnitAttackSpeed("player")
-
-		if ohspeed then
-			element.Mainhand.min = GetTime()
-			element.Mainhand.max = element.Mainhand.min + mhspeed
-			element.Mainhand.speed = mhspeed
+		if offSpeed then
+			element.Mainhand.min = now
+			element.Mainhand.max = element.Mainhand.min + mainSpeed
+			element.Mainhand.speed = mainSpeed
 
 			element.Mainhand:Show()
 			element.Mainhand:SetMinMaxValues(element.Mainhand.min, element.Mainhand.max)
 			element.Mainhand:SetScript("OnUpdate", OnDurationUpdate)
 
-			element.Offhand.min = GetTime()
-			element.Offhand.max = element.Offhand.min + ohspeed
-			element.Offhand.speed = ohspeed
+			element.Offhand.min = now
+			element.Offhand.max = element.Offhand.min + offSpeed
+			element.Offhand.speed = offSpeed
 
 			element.Offhand:Show()
 			element.Offhand:SetMinMaxValues(element.Offhand.min, element.Offhand.max)
 			element.Offhand:SetScript("OnUpdate", OnDurationUpdate)
 		else
-			element.Twohand.min = GetTime()
-			element.Twohand.max = element.Twohand.min + mhspeed
-			element.Twohand.speed = mhspeed
+			element.Twohand.min = now
+			element.Twohand.max = element.Twohand.min + mainSpeed
+			element.Twohand.speed = mainSpeed
 
 			element.Twohand:Show()
 			element.Twohand:SetMinMaxValues(element.Twohand.min, element.Twohand.max)
 			element.Twohand:SetScript("OnUpdate", OnDurationUpdate)
 		end
 
-		meleeing = true
-		rangeing = false
+		meleeing, rangeing = true, false
 	end
 
-	lasthit = GetTime()
+	lastHit = now
 end
 
-local function ParryHaste(self, _, _, subevent, _, _, _, _, _, tarGUID, _, missType)
+local function ParryHaste(self, _, _, subEvent, _, _, _, _, _, tarGUID, _, missType)
 	if UnitGUID("player") ~= tarGUID then return end
 	if not meleeing then return end
-	if not find(subevent, "MISSED") then return end
+	if not find(subEvent, "MISSED") then return end
 	if missType ~= "PARRY" then return end
 
 	local element = self.Swing
-	local _, dualwield = UnitAttackSpeed("player")
 	local now = GetTime()
+	local _, offSpeed = UnitAttackSpeed("player")
 
-	if dualwield then
+	if offSpeed then
 		local percentage = (element.Mainhand.max - now) / element.Mainhand.speed
 
 		if percentage > 0.6 then
@@ -325,16 +320,16 @@ local function ParryHaste(self, _, _, subevent, _, _, _, _, _, tarGUID, _, missT
 	end
 end
 
-local function Ooc(self)
+local function NoCombatHide(self)
 	local element = self.Swing
 
-	meleeing = false
-	rangeing = false
+	for _, Bar in pairs({element.Twohand, element.Mainhand, element.Offhand}) do
+		Bar:Hide()
+	end
 
 	element:Hide()
-	element.Twohand:Hide()
-	element.Mainhand:Hide()
-	element.Offhand:Hide()
+
+	meleeing, rangeing = false, false
 end
 
 local function Enable(self, unit)
@@ -358,11 +353,11 @@ local function Enable(self, unit)
 		end
 
 		self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
---		self:RegisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
+		self:RegisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
 		self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
-		self:RegisterEvent("PLAYER_REGEN_ENABLED", Ooc)
+		self:RegisterEvent("PLAYER_REGEN_ENABLED", NoCombatHide)
 
 		return true
 	end
@@ -373,11 +368,11 @@ local function Disable(self)
 
 	if element then
 		self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
---		self:UnregisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
+		self:UnregisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
 		self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
-		self:UnregisterEvent("PLAYER_REGEN_ENABLED", Ooc)
+		self:UnregisterEvent("PLAYER_REGEN_ENABLED", NoCombatHide)
 
 		element:Hide()
 	end
