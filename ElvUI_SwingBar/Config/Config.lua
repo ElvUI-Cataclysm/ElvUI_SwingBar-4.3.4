@@ -36,46 +36,117 @@ function SB:InsertOptions()
 				type = "toggle",
 				name = L["ENABLE"]
 			},
-			restore = {
+			spacer = {
 				order = 2,
+				type = "description",
+				name = " "
+			},
+			forceShowSingle = {
+				order = 3,
+				type = "execute",
+				name = L["Show Swing Bar"],
+				buttonElvUI = true,
+				func = function()
+					if ElvUF_PlayerSwingBar.testMode then
+						ElvUF_PlayerSwingBar:Hide()
+						ElvUF_PlayerSwingBar.testMode = nil
+					else
+						ElvUF_PlayerSwingBar:Show()
+
+						ElvUF_PlayerSwingBar.Twohand:Show()
+						ElvUF_PlayerSwingBar.Twohand:SetMinMaxValues(1, 100)
+						ElvUF_PlayerSwingBar.Twohand:SetValue(random(10, 90))
+						ElvUF_PlayerSwingBar.Twohand.Text:SetText("0.0")
+
+						ElvUF_PlayerSwingBar.Mainhand:Hide()
+						ElvUF_PlayerSwingBar.Offhand:Hide()
+
+						ElvUF_PlayerSwingBar.testMode = true
+					end
+				end,
+				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
+			},
+			forceShowDual = {
+				order = 4,
+				type = "execute",
+				name = L["Show Swing Bar (Dual Wield)"],
+				buttonElvUI = true,
+				func = function()
+					if ElvUF_PlayerSwingBar.testMode then
+						ElvUF_PlayerSwingBar:Hide()
+						ElvUF_PlayerSwingBar.testMode = nil
+					else
+						ElvUF_PlayerSwingBar:Show()
+
+						ElvUF_PlayerSwingBar.Mainhand:Show()
+						ElvUF_PlayerSwingBar.Mainhand:SetMinMaxValues(1, 100)
+						ElvUF_PlayerSwingBar.Mainhand:SetValue(random(10, 90))
+						ElvUF_PlayerSwingBar.Mainhand.Text:SetText("0.0")
+
+						ElvUF_PlayerSwingBar.Offhand:Show()
+						ElvUF_PlayerSwingBar.Offhand:SetMinMaxValues(1, 100)
+						ElvUF_PlayerSwingBar.Offhand:SetValue(random(10, 90))
+						ElvUF_PlayerSwingBar.Offhand.Text:SetText("0.0")
+
+						ElvUF_PlayerSwingBar.Twohand:Hide()
+
+						ElvUF_PlayerSwingBar.testMode = true
+					end
+				end,
+				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
+			},
+			restore = {
+				order = 5,
 				type = "execute",
 				name = L["Restore Defaults"],
 				buttonElvUI = true,
 				func = function() E:CopyTable(E.db.unitframe.units.player.swingbar, P.unitframe.units.player.swingbar) E:ResetMovers(L["Player SwingBar"]) UF:CreateAndUpdateUF("player") end,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
-			spacer = {
-				order = 3,
-				type = "description",
-				name = " "
-			},
 			width = {
-				order = 4,
+				order = 6,
 				type = "range",
 				name = L["Width"],
-				min = 50, max = 600, step = 1,
+				min = 5, max = 600, step = 1,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			height = {
-				order = 5,
+				order = 7,
 				type = "range",
 				name = L["Height"],
-				min = 5, max = 85, step = 1,
+				min = 5, max = 600, step = 1,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
+			spacer2 = {
+				order = 8,
+				type = "description",
+				name = " "
+			},
 			spark = {
-				order = 6,
+				order = 9,
 				type = "toggle",
 				name = L["Spark"],
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
-			spacer2 = {
-				order = 7,
+			reverseFill = {
+				order = 10,
+				type = "toggle",
+				name = L["Reverse Fill"],
+				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
+			},
+			verticalOrientation = {
+				order = 11,
+				type = "toggle",
+				name = L["Vertical Orientation"],
+				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
+			},
+			spacer3 = {
+				order = 12,
 				type = "description",
 				name = " "
 			},
 			color = {
-				order = 8,
+				order = 13,
 				type = "color",
 				name = L["COLOR"],
 				get = function(info)
@@ -91,7 +162,7 @@ function SB:InsertOptions()
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			backdropColor = {
-				order = 9,
+				order = 14,
 				type = "color",
 				name = L["Backdrop Color"],
 				get = function(info)
@@ -107,7 +178,7 @@ function SB:InsertOptions()
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			textGroup = {
-				order = 10,
+				order = 15,
 				type = "group",
 				name = L["Text"],
 				guiInline = true,

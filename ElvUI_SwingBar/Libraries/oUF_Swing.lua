@@ -332,6 +332,22 @@ local function NoCombatHide(self)
 	meleeing, rangeing = false, false
 end
 
+local function ToggleTestMode(self)
+	local element = self.Swing
+
+	if element.testMode then
+		if not (meleeing or rangeing) then
+			for _, Bar in pairs({element.Twohand, element.Mainhand, element.Offhand}) do
+				Bar:Hide()
+			end
+
+			element:Hide()
+		end
+
+		element.testMode = nil
+	end
+end
+
 local function Enable(self, unit)
 	local element = self.Swing
 
@@ -358,6 +374,7 @@ local function Enable(self, unit)
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
 		self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		self:RegisterEvent("PLAYER_REGEN_ENABLED", NoCombatHide)
+		self:RegisterEvent("PLAYER_REGEN_DISABLED", ToggleTestMode)
 
 		return true
 	end
@@ -373,6 +390,7 @@ local function Disable(self)
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
 		self:UnregisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED", NoCombatHide)
+		self:UnregisterEvent("PLAYER_REGEN_DISABLED", ToggleTestMode)
 
 		element:Hide()
 	end
