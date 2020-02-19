@@ -117,10 +117,12 @@ function SB:InsertOptions()
 				min = 5, max = 600, step = 1,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
-			spacer2 = {
+			spacing = {
 				order = 8,
-				type = "description",
-				name = " "
+				type = "range",
+				name = L["Spacing"],
+				min = 0, max = 20, step = 1,
+				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			spark = {
 				order = 9,
@@ -137,7 +139,7 @@ function SB:InsertOptions()
 			verticalOrientation = {
 				order = 11,
 				type = "toggle",
-				name = L["Vertical Orientation"],
+				name = L["Vertical Fill Direction"],
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
 			spacer3 = {

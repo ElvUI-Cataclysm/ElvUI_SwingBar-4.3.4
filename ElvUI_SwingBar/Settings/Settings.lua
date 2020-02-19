@@ -4,6 +4,7 @@ P.unitframe.units.player.swingbar = {
 	enable = true,
 	width = 270,
 	height = 18,
+	spacing = 0,
 	color = {r = 0.31, g = 0.31, b = 0.31},
 	backdropColor = {r = 0.31, g = 0.31, b = 0.31},
 	spark = true,

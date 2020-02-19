@@ -58,7 +58,7 @@ function UF:Configure_Swingbar(frame)
 		swingbar:Show()
 		swingbar:Size(db.width - (E.Border * 2), db.height)
 
-		swingbar.Holder:Size(db.width, db.height + (E.PixelMode and 2 or (E.Border * 2)))
+		swingbar.Holder:Size(db.width, db.height + E.Border * 2)
 
 		if swingbar.Holder:GetScript("OnSizeChanged") then
 			swingbar.Holder:GetScript("OnSizeChanged")(swingbar.Holder)
@@ -68,17 +68,17 @@ function UF:Configure_Swingbar(frame)
 		swingbar.Offhand:ClearAllPoints()
 
 		if db.verticalOrientation then
-			swingbar.Mainhand:Point("TOPLEFT", swingbar, "TOPLEFT", 0, 0)
-			swingbar.Mainhand:Point("BOTTOMRIGHT", swingbar, "BOTTOM", -E.Border, 0)
+			swingbar.Mainhand:Point("TOPLEFT", swingbar, "TOPLEFT")
+			swingbar.Mainhand:Point("BOTTOMRIGHT", swingbar, "BOTTOM", -db.spacing, 0)
 
-			swingbar.Offhand:Point("TOPLEFT", swingbar, "TOP", 0, 0)
-			swingbar.Offhand:Point("BOTTOMRIGHT", swingbar, "BOTTOMRIGHT", 0, 0)
+			swingbar.Offhand:Point("TOPLEFT", swingbar, "TOP", db.spacing + E.Border, 0)
+			swingbar.Offhand:Point("BOTTOMRIGHT", swingbar, "BOTTOMRIGHT")
 		else
-			swingbar.Mainhand:Point("TOPLEFT", swingbar, "TOPLEFT", 0, 0)
-			swingbar.Mainhand:Point("BOTTOMRIGHT", swingbar, "RIGHT", 0, E.Border)
+			swingbar.Mainhand:Point("TOPLEFT", swingbar, "TOPLEFT")
+			swingbar.Mainhand:Point("BOTTOMRIGHT", swingbar, "RIGHT", 0, db.spacing)
 
-			swingbar.Offhand:Point("TOPLEFT", swingbar, "LEFT", 0, 0)
-			swingbar.Offhand:Point("BOTTOMRIGHT", swingbar, "BOTTOMRIGHT", 0, 0)
+			swingbar.Offhand:Point("TOPLEFT", swingbar, "LEFT", 0, -db.spacing - E.Border)
+			swingbar.Offhand:Point("BOTTOMRIGHT", swingbar, "BOTTOMRIGHT")
 		end
 
 		for _, Bar in pairs({swingbar.Twohand, swingbar.Mainhand, swingbar.Offhand}) do
@@ -94,7 +94,7 @@ function UF:Configure_Swingbar(frame)
 			if db.spark then
 				if db.verticalOrientation then
 					if Bar == swingbar.Twohand then
-						Bar.Spark:Width(db.width)
+						Bar.Spark:Width(db.width * 1.8)
 					else
 						Bar.Spark:Width(db.width)
 					end
