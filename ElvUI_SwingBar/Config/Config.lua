@@ -45,7 +45,6 @@ function SB:InsertOptions()
 				order = 3,
 				type = "execute",
 				name = L["Show Swing Bar"],
-				buttonElvUI = true,
 				func = function()
 					if ElvUF_PlayerSwingBar.testMode then
 						ElvUF_PlayerSwingBar:Hide()
@@ -70,7 +69,6 @@ function SB:InsertOptions()
 				order = 4,
 				type = "execute",
 				name = L["Show Swing Bar (Dual Wield)"],
-				buttonElvUI = true,
 				func = function()
 					if ElvUF_PlayerSwingBar.testMode then
 						ElvUF_PlayerSwingBar:Hide()
@@ -99,7 +97,6 @@ function SB:InsertOptions()
 				order = 5,
 				type = "execute",
 				name = L["Restore Defaults"],
-				buttonElvUI = true,
 				func = function() E:CopyTable(E.db.unitframe.units.player.swingbar, P.unitframe.units.player.swingbar) E:ResetMovers(L["Player SwingBar"]) UF:CreateAndUpdateUF("player") end,
 				disabled = function() return not E.db.unitframe.units.player.swingbar.enable end
 			},
